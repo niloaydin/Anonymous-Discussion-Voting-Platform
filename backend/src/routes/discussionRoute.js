@@ -7,22 +7,31 @@ const router = express.Router();
 
 router.post('/create', discussionController.createDiscussion);
 router.get('/:discussionLink/:userLink', discussionController.getSingleDiscussion);
+// router.get('/:discussionLink/a/:adminLink', discussionController.getSingleDiscussion);
+// router.put('/:discussionLink/update', discussionController.updateDiscussion);
 router.post(
-    '/:discussionLink/create-collector',
+    '/:discussionLink/a/:adminLink/create-collector',
     discussionController.createCollectorForDiscussion
 );
-router.post(
-    '/:discussionLink/create-general-link',
-    discussionController.createDiscussionGeneralLink
-);
-router.post(
-    '/:discussionLink/create-personalized-link',
-    discussionController.createPersonalizedDiscussionLink
-);
+router.get('/:discussionLink/a/:adminLink/collectors', discussionController.getCollectorInfo);
 
 router.post('/:discussionLink/:userLink/vote', voteController.voteForDiscussion);
-router.delete('/:discussionLink/:userLink/vote/:voteId', voteController.removeVoteForDiscussion);
+
+// router.post('/:discussionLink/a/:adminLink/comment', commentController.commentOnDiscussion);
 router.post('/:discussionLink/:userLink/comment', commentController.commentOnDiscussion);
-router.get('/:discussionLink/:userLink/comment', commentController.getCommentsForDiscussion);
+
+router.post('/:discussionLink/a/:adminLink/end-voting', voteController.endVotingPeriod);
+
+router.get(
+    '/:discussionLink/a/:adminLink/results',
+    discussionController.getVotingResultsForCollectors
+  );
+
+router.get('/:discussionLink/:userLink/results', discussionController.getResultsForParticipants);
+
+router.post('/:discussionLink/a/:adminLink/results/selection', discussionController.setResultsForParticipants);
+// router.get('/:discussionLink/:userLink/comment', commentController.getCommentsForDiscussion);
+
+// router.delete('/:discussionLink/:userLink/vote/:voteId', voteController.removeVoteForDiscussion);
 
 module.exports = router;
