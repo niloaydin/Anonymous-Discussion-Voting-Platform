@@ -13,6 +13,7 @@ const AdminDiscussionPage = () => {
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
     // const [discussion, setDiscussion] = useState(null);
+    const [newCommentAdded, setNewCommentAdded] = useState(false); 
     const [collectors, setCollectors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -52,7 +53,7 @@ const AdminDiscussionPage = () => {
     };
     useEffect(() => {
         fetchDiscussion();
-    }, [discussionLink, adminLink, dispatch]);
+    }, [discussionLink, adminLink, dispatch, newCommentAdded]);
 
     const handleCreateCollector = () => {
         setIsModalVisible(true);
