@@ -6,21 +6,21 @@ import BASE_URL from "../config/baseUrl";
 import DiscussionCard from "../components/DiscussionCard";
 import CreateCollectorGroup from "../components/CreateCollectorGroup";
 import { useSelector, useDispatch } from "react-redux";
-import { setDiscussion } from "../features/discussionSlice";
+import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
 
 const AdminDiscussionPage = () => {
     const { discussionLink, adminLink } = useParams();
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
     // const [discussion, setDiscussion] = useState(null);
-    const [newCommentAdded, setNewCommentAdded] = useState(false); 
+    const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
     const [collectors, setCollectors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isCollectorModalVisible, setIsCollectorModalVisible] = useState(false);
     const navigate = useNavigate();
     const FRONTEND_URL = window.location.origin;
-
+    console.log(`ADMIN new comment eklendi mi`, newCommentAdded);
     const fetchDiscussion = async () => {
         setLoading(true);
         try {
@@ -35,6 +35,7 @@ const AdminDiscussionPage = () => {
             });
         } finally {
             setLoading(false);
+            // dispatch(setNewCommentAdded(false));
         }
     };
     const fetchCollectors = async () => {
@@ -52,7 +53,9 @@ const AdminDiscussionPage = () => {
         }
     };
     useEffect(() => {
-        fetchDiscussion();
+        
+            fetchDiscussion();
+        
     }, [discussionLink, adminLink, dispatch, newCommentAdded]);
 
     const handleCreateCollector = () => {
@@ -90,6 +93,8 @@ const AdminDiscussionPage = () => {
 
             <DiscussionCard
                 discussion={discussion}
+                discussionLink={discussionLink}
+                userLink={adminLink}
                 buttonText="Create Collector Group"
 
             />

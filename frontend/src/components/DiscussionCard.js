@@ -1,9 +1,30 @@
 import React from "react";
-import { Card, List, Row, Col } from "antd";
+import { Card, List, Row, Col, notification } from "antd";
 import CountdownClock from "./CountDownClock";
+import { useDispatch, useSelector } from "react-redux";
+import { setNewCommentAdded } from "../features/discussionSlice";
+import CommentCard from "./CommentCard";
+import axios from "axios";
+import BASE_URL from "../config/baseUrl";
 
-const DiscussionCard = ({ discussion }) => {
-  console.log(`discussion in discussion card = ${JSON.stringify(discussion)}`);
+const DiscussionCard = ({ discussion, discussionLink, userLink }) => {
+  const dispatch = useDispatch();
+  const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
+
+  const handleAddComment = async (type, content) => {
+    try {
+      await axios.post(`${BASE_URL}/discussion/${discussionLink}/${userLink}/comment`, {
+        commentType: type,
+        content,
+      });
+      dispatch(setNewCommentAdded(!newCommentAdded));
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || "Failed to add comment.",
+      });
+    }
+  };
   return (
     <Card title={`Discussion: ${discussion.title}`} bordered>
       <p>
@@ -34,6 +55,10 @@ const DiscussionCard = ({ discussion }) => {
             ) : (
               <p>No comments yet.</p>
             )}
+            <CommentCard
+              placeholder="Positive"
+              onSubmit={(content) => handleAddComment("pros", content)}
+            />
           </Card>
         </Col>
 
@@ -47,6 +72,10 @@ const DiscussionCard = ({ discussion }) => {
             ) : (
               <p>No comments yet.</p>
             )}
+            <CommentCard
+              placeholder="Negative"
+              onSubmit={(content) => handleAddComment("cons", content)}
+            />
           </Card>
         </Col>
       </Row>
