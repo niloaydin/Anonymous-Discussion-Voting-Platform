@@ -53,9 +53,9 @@ const AdminDiscussionPage = () => {
         }
     };
     useEffect(() => {
-        
-            fetchDiscussion();
-        
+
+        fetchDiscussion();
+
     }, [discussionLink, adminLink, dispatch, newCommentAdded]);
 
     const handleCreateCollector = () => {
@@ -75,16 +75,12 @@ const AdminDiscussionPage = () => {
         setIsCollectorModalVisible(false);
     };
 
-    if (loading) {
+    if (!discussion) {
         return (
             <div style={{ textAlign: "center", marginTop: "50px" }}>
                 <Spin size="large" />
             </div>
         );
-    }
-
-    if (!discussion) {
-        return <p>No discussion found!</p>;
     }
 
     return (
@@ -105,15 +101,17 @@ const AdminDiscussionPage = () => {
             >
                 View Collectors
             </button>
-            {!discussion.isVotingStarted && (
-                <button
-                    className="ant-btn ant-btn-primary"
-                    style={{ marginTop: 20, display: "block", margin: "0 auto" }}
-                    onClick={handleCreateCollector}
-                >
-                    Create Collector Group
-                </button>
-            )}
+            {
+                !discussion.isVotingStarted && (
+                    <button
+                        className="ant-btn ant-btn-primary"
+                        style={{ marginTop: 20, display: "block", margin: "0 auto" }}
+                        onClick={handleCreateCollector}
+                    >
+                        Create Collector Group
+                    </button>
+                )
+            }
 
             <Modal
                 title="Create Collector Group"
@@ -183,7 +181,7 @@ const AdminDiscussionPage = () => {
                     <p>No collectors found for this discussion!</p>
                 )}
             </Modal>
-        </div>
+        </div >
     );
 };
 

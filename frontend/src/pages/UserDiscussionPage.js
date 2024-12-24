@@ -41,15 +41,16 @@ const UserDiscussionPage = () => {
 
     return (
         <div style={{ maxWidth: 1000, margin: "auto", marginTop: 50 }}>
-            <DiscussionCard discussion={discussion} discussionLink={discussionLink}
-                userLink={userLink} />
             <button
                 className="ant-btn"
-                style={{ marginTop: 20, display: "block", margin: "0 auto" }}
+
                 onClick={() => window.location.href = "/"}
             >
                 Create Your Own Discussion
             </button>
+            <DiscussionCard discussion={discussion} discussionLink={discussionLink}
+                userLink={userLink} />
+
         </div>
     );
 };
