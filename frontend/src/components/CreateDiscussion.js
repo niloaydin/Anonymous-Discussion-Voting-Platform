@@ -15,7 +15,7 @@ const CreateDiscussion = () => {
         setLoading(true);
         try {
             const { email, title, description, duration } = values;
-            const response = await axios.post(BASE_URL + "/api/discussion/create", {
+            const response = await axios.post(BASE_URL + "/discussion/create", {
                 email,
                 title,
                 description,

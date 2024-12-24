@@ -11,6 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/create-discussion" element={<CreateDiscussion />} />
         <Route path="/discussion/:discussionLink/a/:adminLink" element={<AdminDiscussionPage />} />
+        <Route path="/discussion/:discussionLink/:userLink" element={<>HELLO</>} />
       </Routes>
     </Router>
   );

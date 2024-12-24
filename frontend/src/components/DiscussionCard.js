@@ -2,7 +2,7 @@ import React from "react";
 import { Card, List, Row, Col } from "antd";
 import CountdownClock from "./CountDownClock";
 
-const DiscussionCard = ({ discussion, onButtonClick, buttonText }) => {
+const DiscussionCard = ({ discussion }) => {
   console.log(`discussion in discussion card = ${JSON.stringify(discussion)}`);
   return (
     <Card title={`Discussion: ${discussion.title}`} bordered>
@@ -51,13 +51,6 @@ const DiscussionCard = ({ discussion, onButtonClick, buttonText }) => {
         </Col>
       </Row>
 
-      {onButtonClick && buttonText && (
-        <div style={{ marginTop: 20, textAlign: "center" }}>
-          <button className="ant-btn ant-btn-primary" onClick={onButtonClick}>
-            {buttonText}
-          </button>
-        </div>
-      )}
     </Card>
   );
 };

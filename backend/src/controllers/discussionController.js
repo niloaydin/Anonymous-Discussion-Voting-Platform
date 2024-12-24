@@ -222,12 +222,37 @@ const getCollectorInfo = async (req, res) => {
 
 
     const collectors = await CollectorModel.find({ discussionId: discussion._id });
+    const userLinks = await UserLinkModel.find({ discussionId: discussion._id });
+
+    // console.log(`COLLECTORS = ${JSON.stringify(collectors)}`);
+    // console.log(`USER LINKS = ${JSON.stringify(userLinks)}`);
 
     if (!collectors.length) {
       return res.status(404).json({ error: 'No collectors found for this discussion.' });
     }
 
-    return res.status(200).json({ message: collectors });
+    const collectorInfo = collectors.map((collector) => {
+      const linksForCollector = userLinks.filter(
+        (link) => link.collectorId.toString() === collector._id.toString()
+      );
+      console.log(`linksForCollector = ${JSON.stringify(linksForCollector, null,2)}`);
+      const emails = linksForCollector
+        .filter((link) => link.email)
+        .map((link) => link.email);
+
+      const links = linksForCollector.map((link) => link.linkUUID);
+
+      return {
+        name: collector.collectorName,
+        type: collector.collectorType,
+        emails: collector.collectorType === 'specific' ? emails : null,
+        links: links,
+      };
+    });
+
+    // console.log(`collector info = ${JSON.stringify(collectorInfo)}`);
+
+    return res.status(200).json({ message: collectorInfo });
   } catch (error) {
     console.error('Error fetching collectors with links:', error);
     return res.status(500).json({ error: error.message });
