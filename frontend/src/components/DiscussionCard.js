@@ -55,10 +55,12 @@ const DiscussionCard = ({ discussion, discussionLink, userLink }) => {
             ) : (
               <p>No comments yet.</p>
             )}
-            <CommentCard
-              placeholder="Positive"
-              onSubmit={(content) => handleAddComment("pros", content)}
-            />
+            {!discussion.isVotingStarted &&
+              <CommentCard
+                placeholder="Positive"
+                onSubmit={(content) => handleAddComment("pros", content)}
+              />
+            }
           </Card>
         </Col>
 
@@ -72,10 +74,12 @@ const DiscussionCard = ({ discussion, discussionLink, userLink }) => {
             ) : (
               <p>No comments yet.</p>
             )}
-            <CommentCard
-              placeholder="Negative"
-              onSubmit={(content) => handleAddComment("cons", content)}
-            />
+            {!discussion.isVotingStarted &&
+              <CommentCard
+                placeholder="Negative"
+                onSubmit={(content) => handleAddComment("cons", content)}
+              />
+            }
           </Card>
         </Col>
       </Row>
