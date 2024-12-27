@@ -9,10 +9,10 @@ const CreateCollectorGroup = ({ discussionLink, adminLink, onCollectorCreated, o
     const [form] = Form.useForm();
     const [collectorType, setCollectorType] = useState("general");
     const [loading, setLoading] = useState(false);
-    const [links, setLinks] = useState([]); 
+    const [links, setLinks] = useState([]);
     const [emails, setEmails] = useState([]);
-    const [emailInput, setEmailInput] = useState(""); 
-
+    const [emailInput, setEmailInput] = useState("");
+    const FRONTEND_URL = window.location.origin;
 
     const addEmail = () => {
         if (!emailInput || !/^[^,\s]+@[^,\s]+\.[^,\s]+$/.test(emailInput)) {
@@ -53,7 +53,7 @@ const CreateCollectorGroup = ({ discussionLink, adminLink, onCollectorCreated, o
             });
 
             setLinks(response.data.message.listLinks);
-            setEmails([]); 
+            setEmails([]);
         } catch (error) {
             notification.error({
                 message: "Error",
@@ -75,7 +75,7 @@ const CreateCollectorGroup = ({ discussionLink, adminLink, onCollectorCreated, o
     return (
         <div>
             {links.length === 0 ? (
-     
+
                 <Form form={form} layout="vertical" onFinish={handleCreateCollector}>
                     <Form.Item
                         label="Collector Name"
@@ -108,7 +108,7 @@ const CreateCollectorGroup = ({ discussionLink, adminLink, onCollectorCreated, o
                                 </div>
                             </Form.Item>
 
-                
+
                             <List
                                 size="small"
                                 bordered
@@ -145,7 +145,7 @@ const CreateCollectorGroup = ({ discussionLink, adminLink, onCollectorCreated, o
                         dataSource={links}
                         renderItem={(link, index) => (
                             <List.Item>
-                                <Text copyable>{`${BASE_URL}/discussion/${discussionLink}/${link}`}</Text>
+                                <Text copyable>{`${FRONTEND_URL}/discussion/${discussionLink}/${link}`}</Text>
                             </List.Item>
                         )}
                     />

@@ -7,6 +7,7 @@ import DiscussionCard from "../components/DiscussionCard";
 import CreateCollectorGroup from "../components/CreateCollectorGroup";
 import { useSelector, useDispatch } from "react-redux";
 import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
+import { Link } from "react-router-dom";
 
 const AdminDiscussionPage = () => {
     const { discussionLink, adminLink } = useParams();
@@ -85,7 +86,11 @@ const AdminDiscussionPage = () => {
 
     return (
         <div style={{ maxWidth: 1000, margin: "auto", marginTop: 50 }}>
-            <button onClick={() => navigate(`/`)}>Create Discussion</button>
+            <button>
+                <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+                    Create Discussion
+                </Link>
+            </button>
 
             <DiscussionCard
                 discussion={discussion}

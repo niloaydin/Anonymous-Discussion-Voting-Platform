@@ -6,6 +6,8 @@ import axios from "axios";
 import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
 import DiscussionCard from "../components/DiscussionCard";
 import BASE_URL from "../config/baseUrl";
+import { Link } from "react-router-dom";
+
 const UserDiscussionPage = () => {
     const { discussionLink, userLink } = useParams();
     const dispatch = useDispatch();
@@ -41,12 +43,10 @@ const UserDiscussionPage = () => {
 
     return (
         <div style={{ maxWidth: 1000, margin: "auto", marginTop: 50 }}>
-            <button
-                className="ant-btn"
-
-                onClick={() => window.location.href = "/"}
-            >
-                Create Your Own Discussion
+            <button>
+                <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+                    Create Your Own Discussion
+                </Link>
             </button>
             <DiscussionCard discussion={discussion} discussionLink={discussionLink}
                 userLink={userLink} />
