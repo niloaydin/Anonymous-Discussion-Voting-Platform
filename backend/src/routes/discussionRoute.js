@@ -10,8 +10,8 @@ router.get('/:discussionLink/:userLink', discussionController.getSingleDiscussio
 // router.get('/:discussionLink/a/:adminLink', discussionController.getSingleDiscussion);
 // router.put('/:discussionLink/update', discussionController.updateDiscussion);
 router.post(
-    '/:discussionLink/a/:adminLink/create-collector',
-    discussionController.createCollectorForDiscussion
+  '/:discussionLink/a/:adminLink/create-collector',
+  discussionController.createCollectorForDiscussion
 );
 router.get('/:discussionLink/a/:adminLink/collectors', discussionController.getCollectorInfo);
 
@@ -23,13 +23,13 @@ router.post('/:discussionLink/:userLink/comment', commentController.commentOnDis
 router.post('/:discussionLink/a/:adminLink/end-voting', voteController.endVotingPeriod);
 
 router.get(
-    '/:discussionLink/a/:adminLink/results',
-    discussionController.getVotingResultsForCollectors
-  );
+  '/:discussionLink/a/:adminLink/results',
+  discussionController.getVotingResultsForCollectors
+);
 
 router.get('/:discussionLink/:userLink/results', discussionController.getResultsForParticipants);
 
-router.post('/:discussionLink/a/:adminLink/results/selection', discussionController.setResultsForParticipants);
+router.post('/:discussionLink/a/:adminLink/set-results', discussionController.setResultsForParticipants);
 // router.get('/:discussionLink/:userLink/comment', commentController.getCommentsForDiscussion);
 
 // router.delete('/:discussionLink/:userLink/vote/:voteId', voteController.removeVoteForDiscussion);

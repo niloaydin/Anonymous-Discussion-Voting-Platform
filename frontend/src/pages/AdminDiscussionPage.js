@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Spin, notification, Modal } from "antd";
+import { Spin, notification, Modal, Button } from "antd";
 import axios from "axios";
 import BASE_URL from "../config/baseUrl";
 import DiscussionCard from "../components/DiscussionCard";
@@ -21,7 +21,23 @@ const AdminDiscussionPage = () => {
     const [isCollectorModalVisible, setIsCollectorModalVisible] = useState(false);
     const navigate = useNavigate();
     const FRONTEND_URL = window.location.origin;
-    console.log(`ADMIN new comment eklendi mi`, newCommentAdded);
+
+    const handleEndVoting = async () => {
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/discussion/${discussionLink}/a/${adminLink}/end-voting`
+            );
+            notification.success({ message: response.data.message });
+            navigate(`/discussion/${discussionLink}/a/${adminLink}/results`);
+
+        } catch (error) {
+            notification.error({
+                message: "Error",
+                description: error.response?.data?.message || "Failed to end voting.",
+            });
+        }
+    };
+
     const fetchDiscussion = async () => {
         setLoading(true);
         try {
@@ -91,7 +107,14 @@ const AdminDiscussionPage = () => {
                     Create Discussion
                 </Link>
             </button>
-
+            {!discussion.isVotingEnded && (
+                <button type="primary" onClick={handleEndVoting}>
+                    End Voting
+                </button>
+            )}
+            <button type="primary" onClick={() => navigate(`/discussion/${discussionLink}/a/${adminLink}/results`)}>
+                Result Page
+            </button>
             <DiscussionCard
                 discussion={discussion}
                 discussionLink={discussionLink}
@@ -120,7 +143,7 @@ const AdminDiscussionPage = () => {
 
             <Modal
                 title="Create Collector Group"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleModalClose}
                 footer={null} // Remove default footer
             >
@@ -134,7 +157,7 @@ const AdminDiscussionPage = () => {
             {/* Modal for Viewing Collectors */}
             <Modal
                 title="Collector Groups"
-                visible={isCollectorModalVisible}
+                open={isCollectorModalVisible}
                 onCancel={handleCloseCollectorModal}
                 footer={null}
             >

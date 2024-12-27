@@ -42,6 +42,11 @@ const UserVotingPage = () => {
                     if (votedDiscussions[discussionLink]) {
                         dispatch(setVoted({ discussionLink }));
                     }
+                    window.addEventListener("storage", handleStorageChange);
+
+                    return () => {
+                        window.removeEventListener("storage", handleStorageChange);
+                    };
                 }
             } catch (error) {
                 notification.error({
@@ -53,11 +58,6 @@ const UserVotingPage = () => {
 
         fetchCollectorInfo();
 
-        window.addEventListener("storage", handleStorageChange);
-
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-        };
 
     }, [discussionLink, userLink, dispatch]);
 

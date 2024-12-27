@@ -76,7 +76,8 @@ const getSingleDiscussion = async (req, res) => {
       isVotingEnded: discussion.isVotingEnded,
       isEmailSent: discussion.isEmailSent,
       prosComments: prosComments,
-      consComments: consComments
+      consComments: consComments,
+      selectedCollectorIds: discussion.selectedCollectorIds
     }
 
     return res.status(200).json({ message: discussionData });
@@ -247,6 +248,7 @@ const getCollectorInfo = async (req, res) => {
 
 
         return {
+          collectorId: collector._id,
           name: collector.collectorName,
           type: collector.collectorType,
           emails: collector.collectorType === 'specific' ? emails : null,
@@ -325,10 +327,10 @@ const getResultsForParticipants = async (req, res) => {
       return res.status(404).json({ error: 'You cannot review this discussion!' });
     }
 
-    if (!discussion.selectedCollectorIds || discussion.selectedCollectorIds.length === 0) {
+    if (!discussion.selectedCollectorIds && discussion.selectedCollectorIds.length === 0) {
       return res.status(400).json({ error: 'No results have been approved for this discussion.' });
     }
-
+    console.log(`Selected collector IDs: ${discussion}`);
     const results = await fetchVotingResultsForCollectors(discussion.selectedCollectorIds);
 
     res.status(200).json({ results });
