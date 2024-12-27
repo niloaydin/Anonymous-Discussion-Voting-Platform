@@ -70,9 +70,9 @@ const UserDiscussionPage = () => {
                 </Link>
             </button>
             <button type="primary" onClick={() => window.open(`/discussion/${discussionLink}/${userLink}/results`, '_blank')}>
-                <Link to={`/discussion/${discussionLink}/${userLink}/results`} style={{ textDecoration: "none", color: "inherit" }}>
-                    See Voting Results
-                </Link>
+
+                See Voting Results
+
             </button>
             <DiscussionCard discussion={discussion} discussionLink={discussionLink}
                 userLink={userLink} />
