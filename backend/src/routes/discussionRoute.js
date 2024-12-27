@@ -1,4 +1,6 @@
 const express = require('express');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 const discussionController = require('../controllers/discussionController');
 const voteController = require('../controllers/voteController');
 const commentController = require('../controllers/commentController');
@@ -11,7 +13,19 @@ router.get('/:discussionLink/:userLink', discussionController.getSingleDiscussio
 // router.put('/:discussionLink/update', discussionController.updateDiscussion);
 router.post(
   '/:discussionLink/a/:adminLink/create-collector',
+  upload.single('csvFile'),
   discussionController.createCollectorForDiscussion
+);
+router.post(
+  '/test-upload',
+  upload.single('csvFile'),
+  (req, res) => {
+    console.log('File:', req.file);
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+  }
 );
 router.get('/:discussionLink/a/:adminLink/collectors', discussionController.getCollectorInfo);
 
