@@ -28,7 +28,7 @@ const AdminDiscussionPage = () => {
                 `${BASE_URL}/discussion/${discussionLink}/a/${adminLink}/end-voting`
             );
             notification.success({ message: response.data.message });
-            navigate(`/discussion/${discussionLink}/a/${adminLink}/results`);
+            navigate(`/discussion/${discussionLink}/a/${adminLink}/admin-results`);
 
         } catch (error) {
             notification.error({
@@ -72,6 +72,14 @@ const AdminDiscussionPage = () => {
     useEffect(() => {
 
         fetchDiscussion();
+        // const interval = setInterval(() => {
+        //     if (discussion?.isVotingStarted ||
+        //         discussion?.prosComments ||
+        //         discussion?.consComments) {
+        //         fetchDiscussion();
+        //     }
+        // }, 1000);
+        // return () => clearInterval(interval);
 
     }, [discussionLink, adminLink, dispatch, newCommentAdded]);
 
