@@ -112,7 +112,7 @@ const AdminDiscussionPage = () => {
                     End Voting
                 </button>
             )}
-            <button type="primary" onClick={() => navigate(`/discussion/${discussionLink}/a/${adminLink}/results`)}>
+            <button type="primary" onClick={() => navigate(`/discussion/${discussionLink}/a/${adminLink}/admin-results`)}>
                 Result Page
             </button>
             <DiscussionCard
