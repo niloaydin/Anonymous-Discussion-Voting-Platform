@@ -6,20 +6,27 @@ import axios from "axios";
 import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
 import DiscussionCard from "../components/DiscussionCard";
 import BASE_URL from "../config/baseUrl";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserDiscussionPage = () => {
     const { discussionLink, userLink } = useParams();
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
     const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
-    console.log("user page rendered")
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDiscussion = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/discussion/${discussionLink}/${userLink}`);
-                dispatch(setDiscussion(response.data.message));
+                const discussionData = response.data.message;
+
+                if (discussionData.isVotingStarted && !discussionData.isVotingEnded) {
+                    navigate(`/discussion/${discussionLink}/${userLink}/vote`);
+                } else {
+                    dispatch(setDiscussion(discussionData));
+                }
+
             } catch (error) {
                 notification.error({
                     message: "Error",
@@ -31,7 +38,7 @@ const UserDiscussionPage = () => {
         if (!discussion || discussion.link !== discussionLink) {
             fetchDiscussion();
         }
-    }, [dispatch, discussionLink, newCommentAdded]);
+    }, [dispatch, discussionLink, userLink, navigate, newCommentAdded]);
 
     if (!discussion) {
         return (
