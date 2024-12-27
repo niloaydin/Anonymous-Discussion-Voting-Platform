@@ -76,7 +76,8 @@ const getSingleDiscussion = async (req, res) => {
       isVotingEnded: discussion.isVotingEnded,
       isEmailSent: discussion.isEmailSent,
       prosComments: prosComments,
-      consComments: consComments
+      consComments: consComments,
+      selectedCollectorIds: discussion.selectedCollectorIds
     }
 
     return res.status(200).json({ message: discussionData });
@@ -208,18 +209,19 @@ const getCollectorInfo = async (req, res) => {
 
   try {
     const discussion = await DiscussionModel.findOne({ dLink: discussionLink });
+
     console.log("discussion", discussion._id);
+
     if (!discussion) {
       return res.status(404).json({ error: 'Discussion not found' });
     }
 
-    console.log("adminLink", adminLink);
-    console.log("discussion.adminLink", discussion.adminLink);
+    const userLinkData = await UserLinkModel.findOne({ linkUUID: adminLink, discussionId: discussion._id });
 
-    if (adminLink !== discussion.adminLink) {
-      return res.status(403).json({ error: 'Unauthorized: Admin access required' });
+    if (adminLink !== discussion.adminLink && !userLinkData) {
+      return res.status(403).json({ error: 'Unauthorized required' });
     }
-
+    const isAdmin = adminLink === discussion.adminLink;
 
     const collectors = await CollectorModel.find({ discussionId: discussion._id });
     const userLinks = await UserLinkModel.find({ discussionId: discussion._id });
@@ -231,24 +233,44 @@ const getCollectorInfo = async (req, res) => {
       return res.status(404).json({ error: 'No collectors found for this discussion.' });
     }
 
-    const collectorInfo = collectors.map((collector) => {
-      const linksForCollector = userLinks.filter(
-        (link) => link.collectorId.toString() === collector._id.toString()
-      );
-      console.log(`linksForCollector = ${JSON.stringify(linksForCollector, null,2)}`);
-      const emails = linksForCollector
-        .filter((link) => link.email)
-        .map((link) => link.email);
+    let collectorInfo;
+    if (isAdmin) {
+      collectorInfo = collectors.map((collector) => {
+        const linksForCollector = userLinks.filter(
+          (link) => link.collectorId.toString() === collector._id.toString()
+        );
+        console.log(`linksForCollector = ${JSON.stringify(linksForCollector, null, 2)}`);
+        const emails = linksForCollector
+          .filter((link) => link.email)
+          .map((link) => link.email);
 
-      const links = linksForCollector.map((link) => link.linkUUID);
+        const links = linksForCollector.map((link) => link.linkUUID);
 
-      return {
-        name: collector.collectorName,
-        type: collector.collectorType,
-        emails: collector.collectorType === 'specific' ? emails : null,
-        links: links,
-      };
-    });
+
+        return {
+          collectorId: collector._id,
+          name: collector.collectorName,
+          type: collector.collectorType,
+          emails: collector.collectorType === 'specific' ? emails : null,
+          links: links,
+        };
+      });
+    } else {
+
+      collectorInfo = collectors.map((collector) => {
+        const linksForCollector = userLinks.filter(
+          (link) => link.collectorId.toString() === collector._id.toString()
+        );
+
+        const links = linksForCollector.map((link) => link.linkUUID);
+
+        return {
+          name: collector.collectorName,
+          type: collector.collectorType,
+          links: links,
+        };
+      });
+    }
 
     // console.log(`collector info = ${JSON.stringify(collectorInfo)}`);
 
@@ -258,6 +280,7 @@ const getCollectorInfo = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 }
+
 
 const setResultsForParticipants = async (req, res) => {
   try {
@@ -304,10 +327,10 @@ const getResultsForParticipants = async (req, res) => {
       return res.status(404).json({ error: 'You cannot review this discussion!' });
     }
 
-    if (!discussion.selectedCollectorIds || discussion.selectedCollectorIds.length === 0) {
+    if (!discussion.selectedCollectorIds && discussion.selectedCollectorIds.length === 0) {
       return res.status(400).json({ error: 'No results have been approved for this discussion.' });
     }
-
+    console.log(`Selected collector IDs: ${discussion}`);
     const results = await fetchVotingResultsForCollectors(discussion.selectedCollectorIds);
 
     res.status(200).json({ results });

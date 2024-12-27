@@ -6,18 +6,41 @@ import axios from "axios";
 import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
 import DiscussionCard from "../components/DiscussionCard";
 import BASE_URL from "../config/baseUrl";
+import { Link, useNavigate } from "react-router-dom";
+
 const UserDiscussionPage = () => {
     const { discussionLink, userLink } = useParams();
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
     const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
-    console.log("user page rendered")
+    const [hasNotified, setHasNotified] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDiscussion = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/discussion/${discussionLink}/${userLink}`);
-                dispatch(setDiscussion(response.data.message));
+                const discussionData = response.data.message;
+
+                if (discussionData.isVotingStarted && !discussionData.isVotingEnded) {
+                    navigate(`/discussion/${discussionLink}/${userLink}/vote`);
+                } else {
+                    dispatch(setDiscussion(discussionData));
+                }
+
+                if (
+                    discussionData.selectedCollectorIds &&
+                    discussionData.selectedCollectorIds.length > 0 &&
+                    !hasNotified
+                ) {
+                    notification.info({
+                        message: "Results Ready",
+                        description: "The voting results are ready. Click 'See Voting Results' to view them.",
+                        duration: 5,
+                    });
+                    setHasNotified(true);
+                }
+
             } catch (error) {
                 notification.error({
                     message: "Error",
@@ -29,7 +52,7 @@ const UserDiscussionPage = () => {
         if (!discussion || discussion.link !== discussionLink) {
             fetchDiscussion();
         }
-    }, [dispatch, discussionLink, newCommentAdded]);
+    }, [dispatch, discussionLink, userLink, navigate, newCommentAdded, hasNotified]);
 
     if (!discussion) {
         return (
@@ -41,12 +64,15 @@ const UserDiscussionPage = () => {
 
     return (
         <div style={{ maxWidth: 1000, margin: "auto", marginTop: 50 }}>
-            <button
-                className="ant-btn"
-
-                onClick={() => window.location.href = "/"}
-            >
-                Create Your Own Discussion
+            <button>
+                <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+                    Create Your Own Discussion
+                </Link>
+            </button>
+            <button type="primary" onClick={() => window.open(`/discussion/${discussionLink}/${userLink}/results`, '_blank')}>
+                <Link to={`/discussion/${discussionLink}/${userLink}/results`} style={{ textDecoration: "none", color: "inherit" }}>
+                    See Voting Results
+                </Link>
             </button>
             <DiscussionCard discussion={discussion} discussionLink={discussionLink}
                 userLink={userLink} />

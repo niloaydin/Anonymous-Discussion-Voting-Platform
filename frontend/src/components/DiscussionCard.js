@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, List, Row, Col, notification } from "antd";
 import CountdownClock from "./CountDownClock";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +25,8 @@ const DiscussionCard = ({ discussion, discussionLink, userLink }) => {
       });
     }
   };
+
+
   return (
     <Card title={`Discussion: ${discussion.title}`} bordered>
       <p>
