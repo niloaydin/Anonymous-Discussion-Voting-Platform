@@ -35,8 +35,8 @@ const CreateCollectorGroup = ({
     const resetState = () => {
         setEmails([]);
         setCsvFile(null);
-        setLinks([])
         setEmailInput("");
+        setLinks([]);
         setCollectorType("general");
         form.resetFields();
     };
@@ -81,6 +81,13 @@ const CreateCollectorGroup = ({
             } else if (collectorType === "specific" && emails.length > 0) {
                 data = { emails };
                 headers["Content-Type"] = "application/json";
+            } else if (collectorType === "specific" && emails.length === 0) {
+                notification.error({
+                    message: "No Emails",
+                    description: "Please add at least one email or upload a CSV file.",
+                });
+                setLoading(false);
+                return;
             }
 
             const queryParams = new URLSearchParams({
