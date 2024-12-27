@@ -30,6 +30,7 @@ const VotingResultsPage = () => {
             console.log(`SELECTED COLLECTOR IDS: ${selectedCollectorIds}`);
             if (selectedCollectorIds && selectedCollectorIds.length > 0) {
                 setSubmittedCollectors(selectedCollectorIds);
+                setSelectedCollectors(selectedCollectorIds);
                 setIsEditing(false);
             }
         } catch (error) {
