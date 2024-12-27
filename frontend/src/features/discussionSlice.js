@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentDiscussion: null, 
+  currentDiscussion: null,
+  newCommentAdded: false
 };
 
 const discussionSlice = createSlice({
@@ -9,11 +10,14 @@ const discussionSlice = createSlice({
   initialState,
   reducers: {
     setDiscussion: (state, action) => {
-      state.currentDiscussion = action.payload; 
+      state.currentDiscussion = action.payload;
+    },
+    setNewCommentAdded: (state, action) => {
+      state.newCommentAdded = action.payload;
     },
   },
 });
 
-export const { setDiscussion } = discussionSlice.actions; 
+export const { setDiscussion, setNewCommentAdded } = discussionSlice.actions;
 
 export default discussionSlice.reducer; 

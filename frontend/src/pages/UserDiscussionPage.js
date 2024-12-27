@@ -3,14 +3,15 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Spin, notification } from "antd";
 import axios from "axios";
-import { setDiscussion } from "../features/discussionSlice";
+import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
 import DiscussionCard from "../components/DiscussionCard";
 import BASE_URL from "../config/baseUrl";
 const UserDiscussionPage = () => {
     const { discussionLink, userLink } = useParams();
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
-    const [newCommentAdded, setNewCommentAdded] = useState(false); 
+    const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
+    console.log("user page rendered")
 
     useEffect(() => {
         const fetchDiscussion = async () => {
@@ -40,14 +41,16 @@ const UserDiscussionPage = () => {
 
     return (
         <div style={{ maxWidth: 1000, margin: "auto", marginTop: 50 }}>
-            <DiscussionCard discussion={discussion} />
             <button
                 className="ant-btn"
-                style={{ marginTop: 20, display: "block", margin: "0 auto" }}
+
                 onClick={() => window.location.href = "/"}
             >
                 Create Your Own Discussion
             </button>
+            <DiscussionCard discussion={discussion} discussionLink={discussionLink}
+                userLink={userLink} />
+
         </div>
     );
 };
