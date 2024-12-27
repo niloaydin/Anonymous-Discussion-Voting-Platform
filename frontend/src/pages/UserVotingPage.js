@@ -9,10 +9,10 @@ import { setVoted } from "../features/discussionSlice";
 const UserVotingPage = () => {
     const { discussionLink, userLink } = useParams();
     const [voteType, setVoteType] = useState("");
+    const [isGeneralCollector, setIsGeneralCollector] = useState(false);
     const dispatch = useDispatch();
     const hasVoted = useSelector((state) => state.discussion.votedDiscussions[discussionLink]);
 
-    // Check if the user has already voted for this discussion
     useEffect(() => {
         const handleStorageChange = (event) => {
             if (event.key === "votedDiscussions") {
@@ -23,13 +23,43 @@ const UserVotingPage = () => {
             }
         };
 
+        const fetchCollectorInfo = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/discussion/${discussionLink}/a/${userLink}/collectors`);
+                const collectors = response.data.message;
+
+                const userInGeneralCollector = collectors.some(
+                    (collector) =>
+                        collector.type === "general" &&
+                        collector.links.includes(userLink)
+                );
+
+                setIsGeneralCollector(userInGeneralCollector);
+
+                // Check localStorage if the user is in a general collector group
+                if (userInGeneralCollector) {
+                    const votedDiscussions = JSON.parse(localStorage.getItem("votedDiscussions")) || {};
+                    if (votedDiscussions[discussionLink]) {
+                        dispatch(setVoted({ discussionLink }));
+                    }
+                }
+            } catch (error) {
+                notification.error({
+                    message: "Error",
+                    description: error.response?.data?.message || "Failed to fetch collector info.",
+                });
+            }
+        };
+
+        fetchCollectorInfo();
+
         window.addEventListener("storage", handleStorageChange);
 
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
-    }, [dispatch, discussionLink]);
 
+    }, [discussionLink, userLink, dispatch]);
 
     const handleVoteSubmit = async () => {
         try {
@@ -43,9 +73,11 @@ const UserVotingPage = () => {
             notification.success({ message: response.data.message });
             dispatch(setVoted({ discussionLink }));
 
-            const votedDiscussions = JSON.parse(localStorage.getItem("votedDiscussions")) || {};
-            votedDiscussions[discussionLink] = true;
-            localStorage.setItem("votedDiscussions", JSON.stringify(votedDiscussions));
+            if (isGeneralCollector) {
+                const votedDiscussions = JSON.parse(localStorage.getItem("votedDiscussions")) || {};
+                votedDiscussions[discussionLink] = true;
+                localStorage.setItem("votedDiscussions", JSON.stringify(votedDiscussions));
+            }
         } catch (error) {
             notification.error({
                 message: "Error",
