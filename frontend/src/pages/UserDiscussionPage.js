@@ -13,6 +13,7 @@ const UserDiscussionPage = () => {
     const dispatch = useDispatch();
     const discussion = useSelector((state) => state.discussion.currentDiscussion);
     const newCommentAdded = useSelector((state) => state.discussion.newCommentAdded);
+    const [hasNotified, setHasNotified] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,6 +28,19 @@ const UserDiscussionPage = () => {
                     dispatch(setDiscussion(discussionData));
                 }
 
+                if (
+                    discussionData.selectedCollectorIds &&
+                    discussionData.selectedCollectorIds.length > 0 &&
+                    !hasNotified
+                ) {
+                    notification.info({
+                        message: "Results Ready",
+                        description: "The voting results are ready. Click 'See Voting Results' to view them.",
+                        duration: 5,
+                    });
+                    setHasNotified(true);
+                }
+
             } catch (error) {
                 notification.error({
                     message: "Error",
@@ -38,7 +52,7 @@ const UserDiscussionPage = () => {
         if (!discussion || discussion.link !== discussionLink) {
             fetchDiscussion();
         }
-    }, [dispatch, discussionLink, userLink, navigate, newCommentAdded]);
+    }, [dispatch, discussionLink, userLink, navigate, newCommentAdded, hasNotified]);
 
     if (!discussion) {
         return (
@@ -53,6 +67,11 @@ const UserDiscussionPage = () => {
             <button>
                 <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
                     Create Your Own Discussion
+                </Link>
+            </button>
+            <button type="primary" onClick={() => window.open(`/discussion/${discussionLink}/${userLink}/results`, '_blank')}>
+                <Link to={`/discussion/${discussionLink}/${userLink}/results`} style={{ textDecoration: "none", color: "inherit" }}>
+                    See Voting Results
                 </Link>
             </button>
             <DiscussionCard discussion={discussion} discussionLink={discussionLink}
