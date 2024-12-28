@@ -9,29 +9,16 @@ const router = express.Router();
 
 router.post('/create', discussionController.createDiscussion);
 router.get('/:discussionLink/:userLink', discussionController.getSingleDiscussion);
-// router.get('/:discussionLink/a/:adminLink', discussionController.getSingleDiscussion);
 // router.put('/:discussionLink/update', discussionController.updateDiscussion);
 router.post(
   '/:discussionLink/a/:adminLink/create-collector',
   upload.single('csvFile'),
   discussionController.createCollectorForDiscussion
 );
-router.post(
-  '/test-upload',
-  upload.single('csvFile'),
-  (req, res) => {
-    console.log('File:', req.file);
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-    return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
-  }
-);
 router.get('/:discussionLink/a/:adminLink/collectors', discussionController.getCollectorInfo);
 
 router.post('/:discussionLink/:userLink/vote', voteController.voteForDiscussion);
 
-// router.post('/:discussionLink/a/:adminLink/comment', commentController.commentOnDiscussion);
 router.post('/:discussionLink/:userLink/comment', commentController.commentOnDiscussion);
 
 router.post('/:discussionLink/a/:adminLink/end-voting', voteController.endVotingPeriod);
@@ -44,8 +31,5 @@ router.get(
 router.get('/:discussionLink/:userLink/results', discussionController.getResultsForParticipants);
 
 router.post('/:discussionLink/a/:adminLink/set-results', discussionController.setResultsForParticipants);
-// router.get('/:discussionLink/:userLink/comment', commentController.getCommentsForDiscussion);
-
-// router.delete('/:discussionLink/:userLink/vote/:voteId', voteController.removeVoteForDiscussion);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const CommentModel = require('../models/commentModel');
 const VoteModel = require('../models/voteModel');
 const { generateRandomString } = require('../utils/discussionUtils');
 const { fetchVotingResultsForCollectors } = require('../utils/fetchVotingResultForCollectors');
+const {sendEmail} = require('../services/emailService');
 
 const createDiscussion = async (req, res) => {
 
@@ -204,6 +205,22 @@ const createCollectorForDiscussion = async (req, res) => {
       link.collectorId = collector._id;
     });
     await UserLinkModel.insertMany(userLinks);
+    try {
+      if (type === 'specific') {
+        for (const link of userLinks) {
+          if (link.email) {
+            const discussionUrl = `${process.env.BASE_URL}/discussion/${discussion.dLink}/${link.linkUUID}`;
+            const subject = `Invitation to the discussion: ${discussion.title}`;
+            const text = `You are invited to the discussion "${discussion.title}". You can participate through this link: ${discussionUrl}`;
+
+            await sendEmail({ to: link.email, subject, text });
+            console.log(`Email sent to ${link.email}`);
+          }
+        }
+      }
+    } catch (error) {
+      throw new Error("Collector createad but Could not send email!")
+    }
 
     return res.status(200).json({ message: collector });
 
