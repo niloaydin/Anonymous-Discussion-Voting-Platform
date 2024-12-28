@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNewCommentAdded } from "../features/discussionSlice";
 import CommentCard from "./CommentCard";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 
 const DiscussionCard = ({ discussion, discussionLink, userLink }) => {
   const dispatch = useDispatch();
