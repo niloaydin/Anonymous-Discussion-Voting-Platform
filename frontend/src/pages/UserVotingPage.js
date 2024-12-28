@@ -51,7 +51,7 @@ const UserVotingPage = () => {
             } catch (error) {
                 notification.error({
                     message: "Error",
-                    description: error.response?.data?.message || "Failed to fetch collector info.",
+                    description: error.response?.data?.error || "Failed to fetch collector info.",
                 });
             }
         };
@@ -81,7 +81,7 @@ const UserVotingPage = () => {
         } catch (error) {
             notification.error({
                 message: "Error",
-                description: error.response?.data?.message || "Something went wrong.",
+                description: error.response?.data?.error || "Something went wrong.",
             });
         }
     };
