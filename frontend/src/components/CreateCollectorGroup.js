@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Radio, Button, notification, Card, List, Typography } from "antd";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 
 const { Text } = Typography;
 

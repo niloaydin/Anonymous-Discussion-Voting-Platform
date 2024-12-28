@@ -21,12 +21,23 @@ const discussionSlice = createSlice({
       const { discussionLink } = action.payload;
       state.votedDiscussions[discussionLink] = true;
     },
+    addComment(state, action) {
+      const { commentType, content } = action.payload;
+
+      if (state.currentDiscussion) {
+        if (commentType === "pros") {
+          state.currentDiscussion.prosComments.push(content);
+        } else if (commentType === "cons") {
+          state.currentDiscussion.consComments.push(content);
+        }
+      }
+    },
     setIsVotingStarted: (state, action) => {
       state.isVotingStarted = action.payload; 
     },
   },
 });
 
-export const { setDiscussion, setNewCommentAdded,setVoted,setIsVotingStarted } = discussionSlice.actions;
+export const { setDiscussion, setNewCommentAdded,setVoted,setIsVotingStarted,addComment } = discussionSlice.actions;
 
 export default discussionSlice.reducer; 
