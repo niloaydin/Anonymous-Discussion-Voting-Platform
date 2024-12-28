@@ -34,7 +34,7 @@ const AdminDiscussionPage = () => {
         } catch (error) {
             notification.error({
                 message: "Error",
-                description: error.response?.data?.message || "Failed to end voting.",
+                description: error.response?.data?.error || "Failed to end voting.",
             });
         }
     };

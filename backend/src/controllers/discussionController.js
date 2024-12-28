@@ -43,7 +43,7 @@ const createDiscussion = async (req, res) => {
 
     return res.status(200).json({ message: discussion });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -83,7 +83,7 @@ const getSingleDiscussion = async (req, res) => {
 
     return res.status(200).json({ message: discussionData });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ error: error.message });
   };
 }
 
@@ -226,9 +226,9 @@ const createCollectorForDiscussion = async (req, res) => {
 
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(400).json({ message: `Duplicate email detected for discussion: ${emails}` });
+      return res.status(400).json({ error: `Duplicate email detected for discussion: ${emails}` });
     }
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -266,7 +266,7 @@ const getVotingResultsForCollectors = async (req, res) => {
     res.status(200).json({ message: results })
   } catch (error) {
     console.error('Error fetching voting results:', error);
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -344,7 +344,7 @@ const getCollectorInfo = async (req, res) => {
     return res.status(200).json({ message: collectorInfo });
   } catch (error) {
     console.error('Error fetching collectors with links:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 }
 
@@ -376,7 +376,7 @@ const setResultsForParticipants = async (req, res) => {
     return res.status(200).json({ message: 'Results selection saved successfully.' });
   } catch (error) {
     console.error('Error setting results for participants:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 }
 
@@ -403,7 +403,7 @@ const getResultsForParticipants = async (req, res) => {
     res.status(200).json({ results });
   } catch (error) {
     console.error('Error fetching results for participants:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 
 }

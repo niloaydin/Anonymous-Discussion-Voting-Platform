@@ -21,7 +21,7 @@ const commentOnDiscussion = async (req, res) => {
         }
 
         if (!content || !['pros', 'cons'].includes(commentType)) {
-            return res.status(400).json({ message: 'Invalid comment data.' });
+            return res.status(400).json({ error: 'Invalid comment data.' });
         }
         
         await CommentModel.create({
@@ -40,7 +40,7 @@ const commentOnDiscussion = async (req, res) => {
         return res.status(200).json({ message: "comment created!" });
     
     } catch (error) {
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 

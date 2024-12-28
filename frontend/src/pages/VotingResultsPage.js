@@ -36,7 +36,7 @@ const VotingResultsPage = () => {
         } catch (error) {
             notification.error({
                 message: "Error",
-                description: error.response?.data?.message || "Failed to fetch results.",
+                description: error.response?.data?.error || "Failed to fetch results.",
             });
         } finally {
             setLoading(false);
@@ -65,7 +65,7 @@ const VotingResultsPage = () => {
         } catch (error) {
             notification.error({
                 message: "Error",
-                description: error.response?.data?.message || "Failed to set results.",
+                description: error.response?.data?.error || "Failed to set results.",
             });
         }
     };
