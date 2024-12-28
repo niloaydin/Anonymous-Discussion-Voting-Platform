@@ -88,15 +88,33 @@ const getSingleDiscussion = async (req, res) => {
 
 const createCollectorForDiscussion = async (req, res) => {
   const { discussionLink, adminLink } = req.params;
-  const { collectorName, emails, type } = req.body;
+  const { emails } = req.body;
+  const { type, collectorName } = req.query;
+
+  console.log(`FILES: ${JSON.stringify(req.file)}`);
+  let csvFile;
+  if (req.file) csvFile = req.file;
 
   try {
 
     if (!['general', 'specific'].includes(type)) {
       return res.status(400).json({ error: 'Invalid collector type' });
     }
-    if (type === 'specific' && (!Array.isArray(emails) || emails.length === 0)) {
-      return res.status(400).json({ error: 'Emails must be provided as a non-empty array for specific collector type' });
+    if (type === 'specific' && emails) {
+      if ((!Array.isArray(emails) || emails.length === 0)) {
+        return res.status(400).json({ error: 'Emails must be provided as a non-empty array for specific collector type' });
+      }
+    }
+    // if (type === 'specific' && csvFile ) {
+    //   if((!Array.isArray(emails) || emails.length === 0)){
+    //   return res.status(400).json({ error: 'Emails must be provided as a non-empty array for specific collector type' });
+    //   }
+    // }
+
+    if (csvFile) {
+      console.log("CSV File Uploaded:", csvFile);
+    } else {
+      console.log("No CSV file uploaded.");
     }
     const discussion = await DiscussionModel.findOne({ dLink: discussionLink });
 
@@ -118,6 +136,7 @@ const createCollectorForDiscussion = async (req, res) => {
 
     let listLinks = [];
     const userLinks = [];
+    const emailSet = new Set(emails || []);
 
     if (type === 'general') {
       const generalLink = generateRandomString();
@@ -128,18 +147,49 @@ const createCollectorForDiscussion = async (req, res) => {
         linkUUID: generalLink,
       });
 
-    } else if (type === 'specific' && emails && emails.length > 0) {
+    }
+    if (type === 'specific' && csvFile) {
+      const csvParser = require('csv-parser');
+      const fs = require('fs');
 
-      for (const email of emails) {
+      const readStream = fs.createReadStream(csvFile.path);
+      await new Promise((resolve, reject) => {
+        readStream
+          .pipe(csvParser())
+          .on('data', (row) => {
+            console.log("Row read from CSV:", row);
+            const emailField = Object.keys(row).find((key) => key.trim().toLowerCase() === 'email');
+            if (emailField && row[emailField].trim()) {
+              console.log("csv email var in icine girdi")
+              emailSet.add(row[emailField].trim());
+            }
+          })
+          .on('end', () => {
+            console.log("CSV parsing completed.");
+            resolve();
+          })
+          .on('error', () => {
+            console.log("CSV parse error");
+            reject();
+          })
+
+      });
+      if (emailSet.size === 0) {
+        return res.status(400).json({ error: 'CSV file is empty or contains no valid email entries.' });
+      }
+    }
+
+
+
+    if (type === 'specific' && emailSet.size > 0) {
+      for (const email of emailSet) {
         const personalizedLink = generateRandomString();
-
         listLinks.push(personalizedLink);
         userLinks.push({
           discussionId: discussion._id,
           email: email,
           linkUUID: personalizedLink,
         });
-
       }
     }
 
