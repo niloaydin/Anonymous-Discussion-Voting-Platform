@@ -29,8 +29,7 @@ const checkDiscussionsForVoting = async () => {
 
                     const usersWithEmails = await UserLinkModel.find({
                         discussionId: discussion._id,
-                        email: { $exists: true, $ne: null },
-                        isCreator: false,
+                        email: { $exists: true, $ne: null }
                     });
 
                     // Fetch creator's email
@@ -44,6 +43,8 @@ const checkDiscussionsForVoting = async () => {
                         })),
                         ...(creator ? [{ email: creator.email, userLink: '', isCreator: true }] : []),
                     ];
+                    console.log(`usersWithEmails: ${JSON.stringify(usersWithEmails)}`);
+                    console.log(`userDetails: ${JSON.stringify(userDetails)}`);
 
                     if (userDetails.length > 0) {
                         await Promise.all(
@@ -72,7 +73,7 @@ const checkDiscussionsForVoting = async () => {
 
                         discussion.isEmailSent = true;
                         await discussion.save();
-                        
+
                     } else {
                         console.log('No email addresses found for this discussion.');
                     }
