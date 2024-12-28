@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 
 const { Text } = Typography;
 

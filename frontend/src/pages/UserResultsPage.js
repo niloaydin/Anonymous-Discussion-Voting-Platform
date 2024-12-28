@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { notification } from "antd";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 import UserResultsTable from "../components/UserResultsTable";
 import UserResultsChart from "../components/UserResultsChart";
 

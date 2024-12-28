@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Checkbox, Button, notification, Table } from "antd";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 
 const VotingResultsPage = () => {
     const { discussionLink, adminLink } = useParams();

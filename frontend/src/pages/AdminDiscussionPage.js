@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spin, notification, Modal, Button } from "antd";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 import DiscussionCard from "../components/DiscussionCard";
 import CreateCollectorGroup from "../components/CreateCollectorGroup";
 import { useSelector, useDispatch } from "react-redux";
-import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
+import { setDiscussion, addComment } from "../features/discussionSlice";
 import { Link } from "react-router-dom";
+import socket from "../websocket";
 
 const AdminDiscussionPage = () => {
     const { discussionLink, adminLink } = useParams();
@@ -72,16 +73,16 @@ const AdminDiscussionPage = () => {
     useEffect(() => {
 
         fetchDiscussion();
-        // const interval = setInterval(() => {
-        //     if (discussion?.isVotingStarted ||
-        //         discussion?.prosComments ||
-        //         discussion?.consComments) {
-        //         fetchDiscussion();
-        //     }
-        // }, 1000);
-        // return () => clearInterval(interval);
 
-    }, [discussionLink, adminLink, dispatch, newCommentAdded]);
+        socket.on("newComment", (newComment) => {
+            console.log("New comment received via WebSocket:", newComment);
+            dispatch(addComment(newComment)); 
+        });
+        return () => {
+            socket.off("newComment");
+        };
+
+    }, [discussionLink, adminLink, dispatch]);
 
     const handleCreateCollector = () => {
         setIsModalVisible(true);

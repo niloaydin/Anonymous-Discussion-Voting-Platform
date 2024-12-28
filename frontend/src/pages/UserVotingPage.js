@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { notification, Button, Radio } from "antd";
 import axios from "axios";
-import BASE_URL from "../config/baseUrl";
+import {BASE_URL} from "../config/baseUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { setVoted } from "../features/discussionSlice";
 

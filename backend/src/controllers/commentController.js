@@ -29,6 +29,13 @@ const commentOnDiscussion = async (req, res) => {
             content: content,
             commentType: commentType
         })
+        //websocket
+        const io = req.app.get("socketio");
+        io.emit("newComment", {
+          discussionId: discussion._id,
+          content,
+          commentType,
+        });
 
         return res.status(200).json({ message: "comment created!" });
     

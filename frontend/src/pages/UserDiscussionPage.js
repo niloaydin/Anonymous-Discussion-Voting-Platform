@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Spin, notification } from "antd";
 import axios from "axios";
-import { setDiscussion, setNewCommentAdded } from "../features/discussionSlice";
+import { setDiscussion, addComment } from "../features/discussionSlice";
 import DiscussionCard from "../components/DiscussionCard";
-import BASE_URL from "../config/baseUrl";
+import { BASE_URL } from "../config/baseUrl";
 import { Link, useNavigate } from "react-router-dom";
+import socket from "../websocket";
 
 const UserDiscussionPage = () => {
     const { discussionLink, userLink } = useParams();
@@ -51,8 +52,15 @@ const UserDiscussionPage = () => {
 
         if (!discussion || discussion.link !== discussionLink) {
             fetchDiscussion();
+            socket.on("newComment", (newComment) => {
+                console.log("New comment received via WebSocket:", newComment);
+                dispatch(addComment(newComment));
+            });
+            return () => {
+                socket.off("newComment");
+            };
         }
-    }, [dispatch, discussionLink, userLink, navigate, newCommentAdded, hasNotified]);
+    }, [dispatch, discussionLink, userLink, navigate]);
 
     if (!discussion) {
         return (
