@@ -49,8 +49,8 @@ const checkDiscussionsForVoting = async () => {
                     if (userDetails.length > 0) {
                         await Promise.all(
                             userDetails.map(({ email, userLink, isCreator }) => {
-                                const discussionLink = process.env.BASE_URL + `/discussion/${discussion.dLink}/${userLink}/vote`
-                                const adminLink = process.env.BASE_URL + `/discussion/${discussion.dLink}/a/${discussion.adminLink}`
+                                const discussionLink = process.env.FRONTEND_URL + `/discussion/${discussion.dLink}/${userLink}/vote`
+                                const adminLink = process.env.FRONTEND_URL + `/discussion/${discussion.dLink}/a/${discussion.adminLink}`
                                 const subject = isCreator
                                     ? `Your Discussion Voting Started: ${discussion.title}`
                                     : `Voting Started: ${discussion.title}`;

@@ -6,7 +6,8 @@ const CommentModel = require('../models/commentModel');
 const VoteModel = require('../models/voteModel');
 const { generateRandomString } = require('../utils/discussionUtils');
 const { fetchVotingResultsForCollectors } = require('../utils/fetchVotingResultForCollectors');
-const {sendEmail} = require('../services/emailService');
+const { sendEmail } = require('../services/emailService');
+require('dotenv').config();
 
 const createDiscussion = async (req, res) => {
 
@@ -209,7 +210,7 @@ const createCollectorForDiscussion = async (req, res) => {
       if (type === 'specific') {
         for (const link of userLinks) {
           if (link.email) {
-            const discussionUrl = `${process.env.BASE_URL}/discussion/${discussion.dLink}/${link.linkUUID}`;
+            const discussionUrl = `${process.env.FRONTEND_URL}/discussion/${discussion.dLink}/${link.linkUUID}`;
             const subject = `Invitation to the discussion: ${discussion.title}`;
             const text = `You are invited to the discussion "${discussion.title}". You can participate through this link: ${discussionUrl}`;
 
