@@ -15,3 +15,13 @@ The **Anonymous Discussion & Voting Platform** is built to provide a safe, censo
 - **Containerization**: Docker
 
 ---
+## 🧭 Design Templates & Requirements
+
+This project includes a dedicated **[Wiki Page](https://github.com/niloaydin/Anonymous-Discussion-Voting-Platform/wiki)** containing all design-related materials and requirements.
+
+The Wiki includes:
+
+- 🧠 System Design Diagrams  
+- 🗂️ Functional & Non-functional Requirements  
+- 🧱 Data Models & Architecture  
+- 🎨 UI Mockups and Flow Screens
